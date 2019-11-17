@@ -1,22 +1,45 @@
 package com.domain;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    @Column(name = "id")
     private int Id;
-    private String name;
-    private String stock;
 
-    public User(String name, String stock) {
+    @Column(name= "user_name")
+    private String name;
+
+    // previous solution, testing another one
+    /*
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "portfolio_id", referencedColumnName = "id")
+    private StockPortfolio portfolio;
+
+     */
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private StockPortfolio portfolio;
+
+    public User( String name) {
         this.name = name;
-        this.stock = stock;
     }
 
     protected User() {} ;
+
+    public StockPortfolio getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(StockPortfolio portfolio) {
+        this.portfolio = portfolio;
+        portfolio.setUser(this);
+    }
 
     public int getId() {
         return Id;
@@ -34,20 +57,12 @@ public class User {
         this.name = name;
     }
 
-    public String getStock() {
-        return stock;
-    }
-
-    public void setStock(String stock) {
-        this.stock = stock;
-    }
 
     @Override
     public String toString() {
         return "User{" +
                 "Id=" + Id +
                 ", name='" + name + '\'' +
-                ", stock='" + stock + '\'' +
                 '}';
     }
 }
