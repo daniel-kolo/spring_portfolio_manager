@@ -1,16 +1,15 @@
 package com.domain;
 
-import org.springframework.data.annotation.Id;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
 public class User {
 
 
     @GeneratedValue
-    @Id
+    @javax.persistence.Id
     private int Id;
     private String name;
     private String stock;
