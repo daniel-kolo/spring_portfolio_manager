@@ -1,17 +1,11 @@
 package com.domain;
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 1790d8bf236a0a4093f2ae04990d2c526221cb36
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class User {
-    
+
     @Id
     private int Id;
     private String name;

@@ -1,5 +1,6 @@
 package com;
 
+import com.domain.StockDownloader;
 import com.domain.StockInstance;
 import com.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,5 @@ public class PortfolioApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		// create default test stock instances
-		stockService.createStockInstance(1,"test_stock1",
-				new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2019"), 100.0);
-		stockService.createStockInstance(2,"test_stock2",
-				new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2018"), 250.0);
-		stockService.createStockInstance(3,"test_stock3",
-				new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2017"), 1000.0);
-		stockService.lookup().forEach(StockInstance -> System.out.println(StockInstance));
 	}
 }
