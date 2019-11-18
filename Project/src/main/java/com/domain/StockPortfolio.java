@@ -1,51 +1,66 @@
 package com.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @Entity
-@Table(name = "portfolios")
 public class StockPortfolio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     @Column(name = "id")
+
     private int Id;
 
-    // previous solution, testing another one
-    /*
-    @OneToOne(mappedBy = "portfolio", cascade=CascadeType.ALL)
-    private User user;
-    */
 
+    @JsonIgnore
     @OneToOne
     @MapsId
-    private User user;
+    private User user ;
 
-    @Column(name = "stocks")
-    @OneToMany(mappedBy = "portfolio", cascade=CascadeType.ALL)
-    private List<Stock> stocks = new ArrayList<>();
-
+    @Column
+    @OneToMany(targetEntity = Stock.class, mappedBy = "portfolio", cascade=CascadeType.ALL)
+    private List<Stock> stocks= new ArrayList<>(0);;
 
     public StockPortfolio() {}
 
-    public void addStock(Stock stock){
-        this.stocks.add(stock);
-        stock.setPortfolio(this);
+    public int getId() {
+        return Id;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public List<Stock> getStocks() {
+        return stocks;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
+
+    public void setStocks(List<Stock> stocks) {
+        this.stocks = stocks;
     }
 
     public User getUser() {
         return user;
     }
 
-    public List<Stock> getStocks(){
-        return stocks;
+    public void setUser(User user) {
+        this.user = user;
     }
 
+    public void addStock(Stock stock){
+        stocks.add(stock);
+    }
+
+    @Override
+    public String toString() {
+        return "StockPortfolio{" +
+                "Id=" + Id +
+                ", stocks=" + stocks +
+                '}';
+    }
 }

@@ -4,20 +4,21 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "stocks")
 public class Stock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
+
+    @Column(name = "stock_name")
     private String name;
     private String code;
     private int number;
     private double price;
     private Date date;
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "portfolio_id")
+    @ManyToOne(cascade=CascadeType.ALL, targetEntity = StockPortfolio.class)
+    @JoinColumn( name = "stockportfolio_id")
     private StockPortfolio portfolio;
 
     public Stock(String name, String code, double price, Date date) {
@@ -28,7 +29,16 @@ public class Stock {
         this.number=1;
     }
 
-    private Stock(){}
+    public Stock(){}
+
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
 
     public void addStock(){
         this.number+=1;
@@ -37,6 +47,7 @@ public class Stock {
     public void addStock(int num){
         this.number+=num;
     }
+
 
     public StockPortfolio getPortfolio() {
         return portfolio;
@@ -55,7 +66,6 @@ public class Stock {
                 ", number=" + number +
                 ", price=" + price +
                 ", date=" + date +
-                ", portfolio=" + portfolio +
                 '}';
     }
 }
