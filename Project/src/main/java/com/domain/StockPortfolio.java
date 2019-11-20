@@ -13,9 +13,7 @@ public class StockPortfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     @Column(name = "id")
-
     private int Id;
-
 
     @JsonIgnore
     @OneToOne
