@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 public class StockController {
-
+    /*
     @Autowired
     StockRepository stockRepo;
 
@@ -50,4 +50,7 @@ public class StockController {
         stockRepo.delete(stock);
         return "deleted";
     }
+
+
+     */
 }

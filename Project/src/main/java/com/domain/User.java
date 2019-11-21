@@ -24,6 +24,14 @@ public class User {
     )
     private  StockPortfolio portfolio;
 
+    @OneToOne(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private  Report report;
+
 
     public User( String name) {
         this.name = name;
@@ -34,7 +42,6 @@ public class User {
     public StockPortfolio getPortfolio() {
         return portfolio;
     }
-
 
     public void setPortfolio(StockPortfolio portfolio) {
         if (portfolio == null) {

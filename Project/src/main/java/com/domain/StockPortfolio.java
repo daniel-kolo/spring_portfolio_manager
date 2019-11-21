@@ -28,17 +28,15 @@ public class StockPortfolio {
     )
     private List<Stock> stocks= new ArrayList<>(0);;
 
-
-
     public StockPortfolio() {}
 
     public int getId() {
         return Id;
     }
+
     public void setId(int id) {
         Id = id;
     }
-
 
     public List<Stock> getStocks() {
         return stocks;

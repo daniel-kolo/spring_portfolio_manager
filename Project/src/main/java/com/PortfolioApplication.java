@@ -32,7 +32,7 @@ public class PortfolioApplication implements CommandLineRunner {
 	user/logout
 	user/login
 	user/register
-	
+
 	email
 	password
 
