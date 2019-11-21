@@ -5,6 +5,7 @@ import com.repo.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,12 +17,19 @@ public class StockController {
 
     @GetMapping("/stocks")
     public List<Stock> getStocks (){
+
         return stockRepo.findAll();
+
     }
 
     @GetMapping("/stock/{Id}")
     public Optional<Stock> getStock(@PathVariable("Id") int Id){
         return stockRepo.findById(Id);
+    }
+
+    @GetMapping("/stock/name/{name}")
+    public Stock getStock(@PathVariable("name") String name){
+        return stockRepo.findByName(name);
     }
 
     @PostMapping("/stock")

@@ -12,35 +12,43 @@ public class StockPortfolio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
-    @Column(name = "id")
     private int Id;
+
 
     @JsonIgnore
     @OneToOne
     @MapsId
     private User user ;
 
-    @Column
-    @OneToMany(targetEntity = Stock.class, mappedBy = "portfolio", cascade=CascadeType.ALL)
+    @OneToMany(
+            mappedBy = "portfolio",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch=FetchType.EAGER
+    )
     private List<Stock> stocks= new ArrayList<>(0);;
+
+
 
     public StockPortfolio() {}
 
     public int getId() {
         return Id;
     }
+    public void setId(int id) {
+        Id = id;
+    }
+
 
     public List<Stock> getStocks() {
         return stocks;
     }
 
-    public void setId(int id) {
-        Id = id;
-    }
 
     public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
     }
+
 
     public User getUser() {
         return user;
@@ -50,15 +58,11 @@ public class StockPortfolio {
         this.user = user;
     }
 
+
+
     public void addStock(Stock stock){
         stocks.add(stock);
     }
 
-    @Override
-    public String toString() {
-        return "StockPortfolio{" +
-                "Id=" + Id +
-                ", stocks=" + stocks +
-                '}';
-    }
+
 }

@@ -15,6 +15,7 @@ public class User {
     @Column(name= "user_name")
     private String name;
 
+
     @OneToOne(
     mappedBy = "user",
     cascade = CascadeType.ALL,
@@ -22,6 +23,7 @@ public class User {
     fetch = FetchType.LAZY
     )
     private  StockPortfolio portfolio;
+
 
     public User( String name) {
         this.name = name;
@@ -32,6 +34,7 @@ public class User {
     public StockPortfolio getPortfolio() {
         return portfolio;
     }
+
 
     public void setPortfolio(StockPortfolio portfolio) {
         if (portfolio == null) {
@@ -44,6 +47,7 @@ public class User {
         }
         this.portfolio = portfolio;
     }
+
 
     public int getId() {
         return Id;
@@ -61,12 +65,5 @@ public class User {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "Id=" + Id +
-                ", name='" + name + '\'' +
-                ", portfolio=" + portfolio +
-                '}';
-    }
+
 }
