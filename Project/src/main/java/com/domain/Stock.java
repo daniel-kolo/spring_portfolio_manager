@@ -26,7 +26,6 @@ public class Stock {
     @Column(name = "price")
     private double price;
 
-    // TODO DO we really need a date? Price should be enough
     @Column(name = "date")
     private Date date;
 
@@ -61,7 +60,6 @@ public class Stock {
         this.number+=num;
     }
 
-
     public StockPortfolio getPortfolio() {
         return portfolio;
     }
@@ -69,7 +67,6 @@ public class Stock {
     public void setPortfolio(StockPortfolio portfolio) {
         this.portfolio = portfolio;
     }
-
 
     public String getCode() {
         return code;

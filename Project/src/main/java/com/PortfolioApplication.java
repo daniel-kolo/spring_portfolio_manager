@@ -27,9 +27,28 @@ public class PortfolioApplication implements CommandLineRunner {
 		SpringApplication.run(PortfolioApplication.class, args);
 	}
 
+	// TODO
+	/*
+	user/logout
+	user/login
+	user/register
+	
+	email
+	password
+
+
+	Json web token
+	user + rank
+
+	email
+	 */
+
 	@Override
 	public void run(String... args) throws Exception {
 
+		StockDownloader downloader = new StockDownloader();
+
+		// Adding basic test objects of User, StockPortfolio, Stock types
 		StockPortfolio portfolio = new StockPortfolio();
 		Stock stock1 = new Stock("Apple", "AAPL", 100.0,
 				new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2019"));
@@ -43,12 +62,11 @@ public class PortfolioApplication implements CommandLineRunner {
 		stock2.setPortfolio(portfolio);
 
 		User user = new User();
+		user.setName("test_user");
 		user.setPortfolio(portfolio);
 
 		userRepo.save(user);
-
 		portfolioRepo.save(portfolio);
-
 		stockRepo.save(stock1);
 		stockRepo.save(stock2);
 
