@@ -14,11 +14,12 @@ public class Report {
     private Map<String, Float> greaterThan = new HashMap<>();
     private Map<String, Float> lessThan = new HashMap<>();
 
+    /*
     @JsonIgnore
     @OneToOne
     @MapsId
     private User user ;
-
+    */
     public Report(){}
 
     public Boolean getDailyReport() {
@@ -52,4 +53,6 @@ public class Report {
     public Map<String, Float> getLessThan() {
         return lessThan;
     }
+
+
 }

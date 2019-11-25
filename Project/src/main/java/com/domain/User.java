@@ -24,6 +24,7 @@ public class User {
     )
     private  StockPortfolio portfolio;
 
+    /*
     @OneToOne(
             mappedBy = "user",
             cascade = CascadeType.ALL,
@@ -31,7 +32,7 @@ public class User {
             fetch = FetchType.LAZY
     )
     private  Report report;
-
+    */
 
     public User( String name) {
         this.name = name;
