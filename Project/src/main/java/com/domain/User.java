@@ -15,6 +15,8 @@ public class User {
     @Column(name= "user_name")
     private String name;
 
+    private String email;
+    private String password;
 
     @OneToOne(
     mappedBy = "user",
@@ -34,8 +36,11 @@ public class User {
     private  Report report;
     */
 
-    public User( String name) {
-        this.name = name;
+    public User( String email, String password) {
+
+        this.email = email;
+        // TODO password encode
+
     }
 
     public User() {} ;
