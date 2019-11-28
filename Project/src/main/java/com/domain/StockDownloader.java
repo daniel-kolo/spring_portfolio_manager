@@ -27,8 +27,12 @@ public class StockDownloader {
         return new ArrayList<>(tickerMap.keySet());
     }
 
-    public BigDecimal getStockPrice(String stockName) throws IOException {
-        return YahooFinance.get(stockName).getQuote().getPrice();
+    public BigDecimal getStockPriceByName(String stockName) throws IOException {
+        return stockMap.get(stockName).getQuote().getPrice();
+    }
+
+    public BigDecimal getStockPriceByTicker(String ticker){
+        return stockMap.get(ticker).getQuote().getPrice();
     }
 
     private void downloadAllTickers(){

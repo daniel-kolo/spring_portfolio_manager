@@ -1,6 +1,10 @@
 package com;
 
 import com.domain.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,6 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @EnableScheduling
 @SpringBootApplication
@@ -24,6 +29,9 @@ public class PortfolioApplication implements CommandLineRunner {
 
 	@Autowired
 	UserRepository userRepo;
+
+	@Autowired
+	StockDownloader downloader;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PortfolioApplication.class, args);
@@ -48,7 +56,20 @@ public class PortfolioApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		//StockDownloader downloader = new StockDownloader();
+		//Map<String, yahoofinance.Stock> map = downloader.getStockPriceByTicker("GOOG=GOOG");
+
+		/*
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		JsonParser jp = new JsonParser();
+		JsonElement je = jp.parse(map.toString());
+		String prettyJsonString = gson.toJson(je);
+		*/
+		//System.out.println(prettyJsonString);
+
+		//System.out.println(map.values().toArray()[0].getQuote());
+
+		//System.out.println(downloader.getStockNameList());
+		System.out.println(downloader.getStockPriceByTicker("IPG"));
 
 		// Adding basic test objects of User, StockPortfolio, Stock types
 		StockPortfolio portfolio = new StockPortfolio();

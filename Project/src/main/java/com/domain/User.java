@@ -34,19 +34,9 @@ public class User {
     )
     private List<Transaction> transactionList = new ArrayList<>(0);
 
-    /*
-    @OneToOne(
-            mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY
-    )
-    private  Report report;
-    */
-
     public User( String email, String password) {
 
-        this.email = email;
+        //this.email = email;
         // TODO password encode
 
     }
@@ -69,6 +59,9 @@ public class User {
         this.portfolio = portfolio;
     }
 
+    public void addStock(String stockname){
+
+    }
 
     public int getId() {
         return Id;
