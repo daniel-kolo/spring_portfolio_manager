@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+@EnableScheduling
 @SpringBootApplication
 public class PortfolioApplication implements CommandLineRunner {
 
@@ -46,7 +48,7 @@ public class PortfolioApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		StockDownloader downloader = new StockDownloader();
+		//StockDownloader downloader = new StockDownloader();
 
 		// Adding basic test objects of User, StockPortfolio, Stock types
 		StockPortfolio portfolio = new StockPortfolio();

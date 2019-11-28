@@ -26,6 +26,14 @@ public class User {
     )
     private  StockPortfolio portfolio;
 
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch=FetchType.EAGER
+    )
+    private List<Transaction> transactionList = new ArrayList<>(0);
+
     /*
     @OneToOne(
             mappedBy = "user",
