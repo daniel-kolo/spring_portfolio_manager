@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -104,13 +105,22 @@ public class MainController{
         modelAndView.setViewName("stockeditor");
         // TODO: get uid and return in the format, the last element from the portfolio
         mainSiteModel.getStocksInfo();
-
+        EditorView editorModel = new EditorView();
         if (userPortfolioView == null) {
             userPortfolioView = new UserPortfolioView(userDummyView());
             mainSiteModel.setStocksInfo(userPortfolioView.getUserPortfolio());
         }
-        modelAndView.addObject("model", mainSiteModel);
+        editorModel.setEditable(userPortfolioView.getEditorview());
+        modelAndView.addObject("model", editorModel);
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/saveChanges", method = RequestMethod.POST)
+    public String stockChangeSave(ModelAndView modelAndView, EditorView editorView, HttpServletRequest request) {
+
+        System.out.println(request.toString());
+
+        return  "redirect:/welcome";
     }
 
     private StockInfoView[] userDummyView()

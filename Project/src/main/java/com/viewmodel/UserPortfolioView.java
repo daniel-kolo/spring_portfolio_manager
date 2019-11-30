@@ -5,9 +5,21 @@ import java.util.HashMap;
 public class UserPortfolioView {
 
     private HashMap<String, StockInfoView> userPortfolio;
+    private StockInfoView[] portfolioData;
 
     public HashMap<String, StockInfoView> getUserPortfolio() {
         return userPortfolio;
+    }
+
+    public HashMap<String, StockPartInfoView> getEditorview()
+    {
+        HashMap<String, StockPartInfoView> editorView = new HashMap<String, StockPartInfoView>();
+        for (int i = 0; i < portfolioData.length; i++)
+        {
+            int lastIdx = portfolioData[i].getElementsToShow().length - 1;
+            editorView.put(portfolioData[i].getStockName(), portfolioData[i].getElementsToShow()[lastIdx]);
+        }
+        return editorView;
     }
 
     public UserPortfolioView(StockInfoView[] portfolioData) {
@@ -17,6 +29,4 @@ public class UserPortfolioView {
             userPortfolio.put(v.getStockName(), v);
         }
     }
-
-    private StockInfoView[] portfolioData;
 }

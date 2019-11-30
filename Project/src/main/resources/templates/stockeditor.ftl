@@ -66,7 +66,8 @@
             -webkit-appearance: none;
         }
     </style>
-
+    <#assign idx = 0>
+    <#assign idname = 'stockCount'>
     <script>
         window.onload = function () {
             function incrementValue(e) {
@@ -106,11 +107,36 @@
     </script>
 </head>
 <body>
-    <div class="input-group">
-        <input type="button" value="-" class="button-minus" data-field="quantity">
-        <input type="number" step="1" max="" value="1" name="quantity" class="quantity-field">
-        <input type="button" value="+" class="button-plus" data-field="quantity">
-    </div>
+
+    <form action="/saveChanges" method="post">
+        <table>
+            <tr>
+                <td>Stock name</td>
+                <td>Last Price</td>
+                <td>Amount</td>
+            </tr>
+
+            <#list model.editable as key, stockPartInfo>
+                <tr>
+                    <td>${key}</td>
+                    <td>${stockPartInfo.price}</td>
+                    <td>
+                        <div class="input-group">
+                            <#assign stockId = idname + idx>
+                            <input type="button" value="-" class="button-minus" data-field="${stockId}">
+                            <input type="number" step="1" max="" value="${stockPartInfo.amount}" name="${stockId}" class="quantity-field">
+                            <input type="button" value="+" class="button-plus" data-field="${stockId}">
+                        </div>
+                    </td>
+                </tr>
+                <#assign  idx = idx + 1>
+            </#list>
+        </table>
+        <button type="submit">Change</button>
+    </form>
+
+
+
 
     <script type="text/javascript"  src="webjars/jquery/3.2.1/jquery.min.js"></script>
 </body>
