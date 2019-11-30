@@ -42,11 +42,9 @@ public class StockPortfolio {
         return stocks;
     }
 
-
     public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
     }
-
 
     public User getUser() {
         return user;
@@ -55,8 +53,6 @@ public class StockPortfolio {
     public void setUser(User user) {
         this.user = user;
     }
-
-
 
     public void addStock(Stock stock){
         stocks.add(stock);

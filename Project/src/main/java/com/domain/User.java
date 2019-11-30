@@ -15,6 +15,13 @@ public class User {
     @Column(name= "user_name")
     private String name;
 
+    @Column
+    private String username;
+
+    @Column
+    @JsonIgnore
+    private String password;
+
 
     @OneToOne(
     mappedBy = "user",
@@ -24,18 +31,19 @@ public class User {
     )
     private  StockPortfolio portfolio;
 
-    /*
-    @OneToOne(
+    @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
-            fetch = FetchType.LAZY
+            fetch=FetchType.EAGER
     )
-    private  Report report;
-    */
+    private List<Transaction> transactionList = new ArrayList<>(0);
 
-    public User( String name) {
-        this.name = name;
+    public User( String email, String password) {
+
+        //this.email = email;
+        // TODO password encode
+
     }
 
     public User() {} ;
@@ -56,6 +64,9 @@ public class User {
         this.portfolio = portfolio;
     }
 
+    public void addStock(String stockname){
+
+    }
 
     public int getId() {
         return Id;
@@ -71,6 +82,22 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 

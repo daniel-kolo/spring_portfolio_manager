@@ -1,4 +1,6 @@
 package com.domain;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 
@@ -9,7 +11,7 @@ import java.util.*;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ClassPathResource;
 
-
+@Component
 public class StockDownloader {
 
     private HashMap<String,String> tickerMap = new HashMap<>();
@@ -25,8 +27,12 @@ public class StockDownloader {
         return new ArrayList<>(tickerMap.keySet());
     }
 
-    public BigDecimal getStockPrice(String stockName) throws IOException {
-        return YahooFinance.get(stockName).getQuote().getPrice();
+    public BigDecimal getStockPriceByName(String stockName) throws IOException {
+        return stockMap.get(stockName).getQuote().getPrice();
+    }
+
+    public BigDecimal getStockPriceByTicker(String ticker){
+        return stockMap.get(ticker).getQuote().getPrice();
     }
 
     private void downloadAllTickers(){
@@ -63,6 +69,11 @@ public class StockDownloader {
         }
     }
 
+    @Scheduled(fixedRate = 600000)
+    public void refresh(){
+        this.downloadAllPrices();
+        System.out.println("Stock prices refreshed");
+    }
 
 
 }
