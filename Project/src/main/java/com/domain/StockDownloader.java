@@ -24,16 +24,25 @@ public class StockDownloader {
     }
 
     public List<String> getStockNameList(){
-        return new ArrayList<>(tickerMap.keySet());
+        return new ArrayList<>(tickerMap.values());
     }
+
+    public List<String> getTickerList(){ return new ArrayList<>(tickerMap.keySet()) ;}
 
     public BigDecimal getStockPriceByName(String stockName) throws IOException {
         return stockMap.get(stockName).getQuote().getPrice();
     }
 
     public BigDecimal getStockPriceByTicker(String ticker){
+        System.out.println("DOWNLOADER:" + stockMap.get(ticker).getQuote().getPrice());
         return stockMap.get(ticker).getQuote().getPrice();
     }
+
+    public Stock getTestTicker(String ticker){
+        return stockMap.get(ticker);
+    }
+
+    public Map getStockMap(){return stockMap;}
 
     private void downloadAllTickers(){
         try {
@@ -44,7 +53,7 @@ public class StockDownloader {
             String row;
             while (( row = csvReader.readLine()) != null) {
                 String[] data = row.split(",");
-                tickerMap.put(data[1],data[0]);
+                tickerMap.put(data[0],data[1]);
             }
             csvReader.close();
         }
@@ -57,7 +66,7 @@ public class StockDownloader {
     private void downloadAllPrices(){
         String[] stockNames = new String[tickerMap.size()];
         int counter = 0;
-        for ( String key : tickerMap.values() ) {
+        for ( String key : tickerMap.keySet() ) {
             stockNames[counter] = key;
             counter++;
         }
