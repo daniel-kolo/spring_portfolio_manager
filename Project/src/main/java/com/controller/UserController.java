@@ -1,7 +1,13 @@
 package com.controller;
 
+import com.DTO.StockPortfolioDTO;
+import com.DTO.UserDTO;
+import com.domain.StockPortfolio;
 import com.domain.User;
+import com.repo.StockPortfolioRepository;
+import com.repo.StockRepository;
 import com.repo.UserRepository;
+import com.security.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,26 +21,53 @@ public class UserController {
     @Autowired
     UserRepository userRepo;
 
-    @GetMapping("/users")
-    public List<User> getUsers (){
-        return userRepo.findAll();
+    @Autowired
+    StockPortfolioRepository portfolioRepo;
+
+    @Autowired
+    JwtTokenUtil tokenUtil;
+
+    @Autowired
+    StockRepository stockRepo;
+
+    @GetMapping("/user")
+    public UserDTO getUserByToken(@RequestHeader (name="Authorization") String token){
+        String jwtToken = token.substring(7);
+        String username = tokenUtil.getUsernameFromToken(jwtToken );
+        System.out.println("GET " + userRepo.findByUsername(username)) ;
+        return new UserDTO(userRepo.findByUsername(username));
     }
 
-    @GetMapping("/user/{Id}")
-     public Optional<User> getUser(@PathVariable("Id") int Id){
-        return userRepo.findById(Id);
+    @GetMapping("/user/portfolio")
+    public StockPortfolioDTO getPortfolioByToken(@RequestHeader (name="Authorization") String token){
+        String jwtToken = token.substring(7);
+        String username = tokenUtil.getUsernameFromToken(jwtToken );
+        return new StockPortfolioDTO(userRepo.findByUsername(username).getPortfolio()) ;
     }
 
-    @PostMapping("/user")
-    public User addUser(@RequestBody User user){
+    @PostMapping("/user/portfolio/add")
+    public StockPortfolioDTO addStockToPortfolio(@RequestHeader (name="Authorization") String token){
+        String jwtToken = token.substring(7);
+        String username = tokenUtil.getUsernameFromToken(jwtToken );
+        //StockPortfolio =  userRepo.findByUsername(username).getPortfolio().addStock("GOOG", 1);
+        User user  = userRepo.findByUsername(username);
+        StockPortfolio portfolio = user.getPortfolio();
+        portfolio.addStock("GOOG", 1, stockRepo);
+        portfolio.setTest("test");
+        user.setPortfolio(portfolio);
+        System.out.println(user);
+
         userRepo.save(user);
-        return user;
+        portfolioRepo.save(portfolio);
+        System.out.println(userRepo.findByUsername(username)) ;
+        return new StockPortfolioDTO(portfolio);
     }
+
 
     @PutMapping("/user")
-    public User saveOrUpdateUser(@RequestBody  User user){
+    public UserDTO saveOrUpdateUser(@RequestBody  User user){
         userRepo.save(user);
-        return user;
+        return new UserDTO(user);
     }
 
     @DeleteMapping("/user/{Id}")
@@ -43,5 +76,7 @@ public class UserController {
         userRepo.delete(user);
         return "deleted";
     }
+
+
 
 }
