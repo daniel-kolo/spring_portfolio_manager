@@ -1,4 +1,5 @@
 package com.domain;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import yahoofinance.Stock;

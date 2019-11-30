@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -14,32 +15,27 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
 
-    @Column(name = "stock_name", nullable = false)
+    @Column(name = "stock_name")
     private String name;
 
     @Column(name = "code")
-    private String code;
-
-    @Column(name = "number")
-    private int number;
+    private String ticker;
 
     @Column(name = "price")
     private double price;
 
-    @Column(name = "date")
-    private Date date;
+    @Column(name = "acquire_date")
+    private Date acquireDate;
 
     @JsonIgnore
     @ManyToOne(fetch= FetchType.EAGER)
     @JoinColumn(name = "portfolio_id")
     private StockPortfolio portfolio;
 
-    public Stock(String name, String code, double price, Date date) {
-        this.name = name;
-        this.code = code;
+    public Stock(String ticker, double price, Date date) {
+        this.ticker = ticker;
         this.price = price;
-        this.date = date;
-        this.number=1;
+        this.acquireDate = date;
     }
 
     public Stock(){}
@@ -52,14 +48,6 @@ public class Stock {
         Id = id;
     }
 
-    public void addStock(){
-        this.number+=1;
-    }
-
-    public void addStock(int num){
-        this.number+=num;
-    }
-
     public StockPortfolio getPortfolio() {
         return portfolio;
     }
@@ -68,12 +56,8 @@ public class Stock {
         this.portfolio = portfolio;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public int getNumber() {
-        return number;
+    public String getTicker() {
+        return ticker;
     }
 
     public double getPrice() {
@@ -81,7 +65,7 @@ public class Stock {
     }
 
     public Date getDate() {
-        return date;
+        return acquireDate;
     }
 
     public String getName() {
@@ -93,11 +77,7 @@ public class Stock {
     }
 
     public void setCode(String code) {
-        this.code = code;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
+        this.ticker = code;
     }
 
     public void setPrice(double price) {
@@ -105,7 +85,7 @@ public class Stock {
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        this.acquireDate = date;
     }
 
     @Override
@@ -113,10 +93,9 @@ public class Stock {
         return "Stock{" +
                 "Id=" + Id +
                 ", name='" + name + '\'' +
-                ", code='" + code + '\'' +
-                ", number=" + number +
+                ", ticker='" + ticker + '\'' +
                 ", price=" + price +
-                ", date=" + date +
+                ", date=" + acquireDate +
                 '}';
     }
 }

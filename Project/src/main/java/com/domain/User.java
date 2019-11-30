@@ -22,6 +22,8 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @Column
+    private String email;
 
     @OneToOne(
     mappedBy = "user",
@@ -39,14 +41,7 @@ public class User {
     )
     private List<Transaction> transactionList = new ArrayList<>(0);
 
-    public User( String email, String password) {
-
-        //this.email = email;
-        // TODO password encode
-
-    }
-
-    public User() {} ;
+     public User() {} ;
 
     public StockPortfolio getPortfolio() {
         return portfolio;
@@ -62,10 +57,6 @@ public class User {
             portfolio.setUser(this);
         }
         this.portfolio = portfolio;
-    }
-
-    public void addStock(String stockname){
-
     }
 
     public int getId() {
@@ -100,5 +91,30 @@ public class User {
         this.password = password;
     }
 
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void addTransaction(Transaction transaction){
+        transactionList.add(transaction);
+    }
+
+    public List<Transaction> getTransactionList(){
+        return transactionList;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", portfolio=" + portfolio +
+                ", transactionList=" + transactionList +
+                '}';
+    }
 }

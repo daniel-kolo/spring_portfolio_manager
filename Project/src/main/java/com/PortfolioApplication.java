@@ -11,6 +11,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import yahoofinance.Stock;
+import yahoofinance.YahooFinance;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +34,11 @@ public class PortfolioApplication implements CommandLineRunner {
 
 	@Autowired
 	StockDownloader downloader;
+
+
+
+
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(PortfolioApplication.class, args);
@@ -69,29 +76,43 @@ public class PortfolioApplication implements CommandLineRunner {
 		//System.out.println(map.values().toArray()[0].getQuote());
 
 		//System.out.println(downloader.getStockNameList());
-		System.out.println(downloader.getStockPriceByTicker("IPG"));
+
+
+		//System.out.println(downloader.getStockPriceByTicker("IPG"));
 
 		// Adding basic test objects of User, StockPortfolio, Stock types
 		StockPortfolio portfolio = new StockPortfolio();
-		Stock stock1 = new Stock("Apple", "AAPL", 100.0,
-				new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2019"));
-		Stock stock2 = new Stock("Google", "GOOGL", 200.0,
-				new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2019"));
 
-		portfolio.addStock(stock1);
-		stock1.setPortfolio(portfolio);
 
-		portfolio.addStock(stock2);
-		stock2.setPortfolio(portfolio);
+		//System.out.println(downloader.getStockPriceByTicker("GOOG"));
+
+		//System.out.println(downloader.getStockMap().get("IPG"));
+		//System.out.println(downloader.getStockMap().get("CA"));
+		//System.out.println(downloader.getStockMap().get("GOOG"));
+
+
+
+		//System.out.println(downloader.getTestTicker("CA"));
+		//portfolio.addStock("CA", 1);
+
+		// TODO
+		//System.out.println(downloader);
+		portfolio.setUser(new User());
+		//
+		// portfolio.addStock("GOOG", 1);
+
+		StockPriceService stockPriceService = new StockPriceService();
+		System.out.println(BeanUtil.getBean(StockDownloader.class).getStockPriceByTicker("GOOG"));
 
 		User user = new User();
 		user.setName("test_user");
+		user.setUsername("test");
+		user.setPassword("test");
 		user.setPortfolio(portfolio);
 
 		userRepo.save(user);
 		portfolioRepo.save(portfolio);
-		stockRepo.save(stock1);
-		stockRepo.save(stock2);
+
 
 	}
 }
