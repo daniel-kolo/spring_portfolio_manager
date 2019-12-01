@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sql.rowset.spi.SyncFactory;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,8 @@ public class UserController {
     public UserDTO getUserByToken(@RequestHeader (name="Authorization") String token){
         String jwtToken = token.substring(7);
         String username = tokenUtil.getUsernameFromToken(jwtToken );
-        System.out.println(userRepo.findByUsername(username));
+        System.out.println("GET " + userRepo.findByUsername(username));
+        System.out.println("NEW DTO " + new UserDTO(userRepo.findByUsername(username)));
         return new UserDTO(userRepo.findByUsername(username));
     }
 

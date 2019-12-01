@@ -2,6 +2,7 @@ package com.DTO;
 
 import com.domain.StockPortfolio;
 import com.domain.Transaction;
+import com.domain.TransactionContainer;
 import com.domain.User;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public class UserDTO {
     private String password;
     private String email;
     private StockPortfolio portfolio;
-    private List<Transaction> transactionList;
+    private TransactionContainer transactionContainer;
 
     public UserDTO(User user){
         name = user.getName();
@@ -20,7 +21,7 @@ public class UserDTO {
         password = user.getPassword();
         email = user.getEmail();
         portfolio = user.getPortfolio();
-        transactionList = user.getTransactionList();
+        transactionContainer = user.getTransactionContainer();
     }
 
     public UserDTO(){}
@@ -41,8 +42,8 @@ public class UserDTO {
         return portfolio;
     }
 
-    public List<Transaction> getTransactionList() {
-        return transactionList;
+    public TransactionContainer getTransactionContainer() {
+        return transactionContainer;
     }
 
     public String getPassword() {
@@ -69,8 +70,8 @@ public class UserDTO {
         this.portfolio = portfolio;
     }
 
-    public void setTransactionList(List<Transaction> transactionList) {
-        this.transactionList = transactionList;
+    public void setTransactionContainer(TransactionContainer transactionContainer) {
+        this.transactionContainer = transactionContainer;
     }
 
     @Override
@@ -81,7 +82,7 @@ public class UserDTO {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", portfolio=" + portfolio +
-                ", transactionList=" + transactionList +
+                ", transactionContainer=" + transactionContainer +
                 '}';
     }
 }
