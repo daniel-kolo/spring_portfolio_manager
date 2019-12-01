@@ -1,6 +1,7 @@
 package com.controller;
 
-import com.domain.Stock;
+import com.domain.StockDownloader;
+import com.domain.StockPortfolio;
 import com.domain.User;
 import com.viewmodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,19 +10,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import yahoofinance.histquotes.HistoricalQuote;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/")
 public class MainController{
 
-    private MainSiteModel mainSiteModel;
+    @Autowired
+    private  JwtAuthenticationController jwtAuthenticationController;
+    @Autowired
+    private StockDownloader stockDownloader;
+
+    private Calendar cd = Calendar.getInstance();
+
+    private MainSiteModel mainSiteModel = new MainSiteModel();
     private UserPortfolioView userPortfolioView;
+    private HashMap<String, StockInfoView> viewMap = new HashMap<String, StockInfoView>();
+
+    public MainController() {
+        cd.set(2019, 01, 01);
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String welcome() {
@@ -32,37 +50,15 @@ public class MainController{
     public ModelAndView welcomePage(ModelAndView modelAndView) throws ParseException {
         modelAndView.setViewName("index");
 
-        if (mainSiteModel == null)
-        {
-            mainSiteModel = new MainSiteModel();
-            User u = new User();
-            u.setName("testuser");
-            mainSiteModel.setUser(u);
-        }
-
         if (mainSiteModel.getUser() != null) {
-            // TODO: get user stock
-            if (userPortfolioView == null) {
-                userPortfolioView = new UserPortfolioView(userDummyView());
-            }
-            mainSiteModel.setStocksInfo(userPortfolioView.getUserPortfolio());
-        } else {
-            // TODO: logic get some stock or user portfolio if logged in
-            // Random five
-            HashMap<String, StockInfoView> stocks = new HashMap<String, StockInfoView>();
-            StockPartInfoView[] elements = {
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2019"), 50, 0),
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/10/2019"), 60, 0),
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/11/2019"), 900, 0),
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/12/2019"), 50, 0),
-            };
-            StockInfoView st = new StockInfoView("stocky",elements);
-            stocks.put(st.getStockName(), st);
-            stocks.put("Just random string", st);
-            stocks.put("Another one", st);
-            mainSiteModel.setStocksInfo(stocks);
-        }
 
+        } else {
+            viewMap = getStocks(5);
+            for (String key : viewMap.keySet()){
+                System.out.println(viewMap.get(key));
+            }
+        }
+        mainSiteModel.setStocksInfo(viewMap);
         modelAndView.addObject("model", mainSiteModel);
         return modelAndView;
     }
@@ -152,5 +148,31 @@ public class MainController{
         return data;
     }
 
+    private HashMap<String, StockInfoView> getStocks(int numberOfStocks) {
+        HashMap<String, StockInfoView> map = new HashMap<>();
+        Random rand = new Random();
+        HashMap<String, String> stockIdToName = new HashMap<>();
+        List<String> stockIds = stockDownloader.getTickerList();
 
+        for (int i = 0; i < numberOfStocks; i++)
+        {
+            int idx = rand.nextInt(stockIds.size());
+            String stockId = stockIds.get(idx);
+            yahoofinance.Stock yahooStock = (yahoofinance.Stock)stockDownloader.getStockMap().get(stockId);
+            try {
+                List<HistoricalQuote> hist = yahooStock.getHistory(cd, Calendar.getInstance());
+                StockPartInfoView[] pw = new StockPartInfoView[hist.size()];
+                int j = 0;
+                for (HistoricalQuote h : hist) {
+                    Double price = Double.parseDouble(h.getClose().toString());
+                    pw[j] = new StockPartInfoView(h.getDate().getTime(), price, 0);
+                    j++;
+                }
+                map.put(yahooStock.getName(), new StockInfoView(stockId, pw));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return map;
+    }
 }
