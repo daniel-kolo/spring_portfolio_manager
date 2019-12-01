@@ -108,13 +108,14 @@
 </head>
 <body>
 
+    <h2>Manage stock</h2>
     <form action="/saveChanges" method="post">
         <table>
-            <tr>
+            <thead>
                 <td>Stock name</td>
                 <td>Last Price</td>
                 <td>Amount</td>
-            </tr>
+            </thead>
 
             <#list model.editable as key, stockPartInfo>
                 <tr>
@@ -123,9 +124,11 @@
                     <td>
                         <div class="input-group">
                             <#assign stockId = idname + idx>
+                            <#assign hiddenValue = '${key};${stockId}'>
                             <input type="button" value="-" class="button-minus" data-field="${stockId}">
                             <input type="number" step="1" max="" value="${stockPartInfo.amount}" name="${stockId}" class="quantity-field">
                             <input type="button" value="+" class="button-plus" data-field="${stockId}">
+                            <input type="hidden" value="${hiddenValue}">
                         </div>
                     </td>
                 </tr>
@@ -133,6 +136,20 @@
             </#list>
         </table>
         <button type="submit">Change</button>
+    </form>
+
+    <h2>Add stock</h2>
+    <form action="/addStock" method="post">
+        <table>
+            <#list model.tickerToStockName as key, value>
+                <#if key?? && value??>
+                    <tr>
+                        <td>${value}</td>
+                        <td><input type="checkbox" name="${key}" required="false"></td>
+                    </tr>
+                </#if>
+            </#list>
+        </table>
     </form>
 
 

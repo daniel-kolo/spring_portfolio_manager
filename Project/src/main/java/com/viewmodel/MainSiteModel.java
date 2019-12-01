@@ -1,5 +1,7 @@
 package com.viewmodel;
 
+import com.DTO.StockPortfolioDTO;
+import com.DTO.UserDTO;
 import com.domain.Stock;
 import com.domain.User;
 
@@ -7,7 +9,8 @@ import java.util.HashMap;
 
 public class MainSiteModel {
 
-    private User user;
+    private UserDTO user;
+    private StockPortfolioDTO portfolioDTO;
     private Stock[] randomStocks;
     private HashMap<String, StockInfoView> stocksInfo;
 
@@ -20,12 +23,12 @@ public class MainSiteModel {
     public MainSiteModel() {
     }
 
-    public MainSiteModel(User user, Stock[] currentShown) {
+    public MainSiteModel(UserDTO user, Stock[] currentShown) {
         this.user = user;
         this.randomStocks = currentShown;
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
@@ -33,7 +36,7 @@ public class MainSiteModel {
         return randomStocks;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         this.user = user;
     }
 
@@ -49,5 +52,16 @@ public class MainSiteModel {
         this.stocksInfo = stocksInfo;
     }
 
+    public StockPortfolioDTO getPortfolioDTO() {
+        return portfolioDTO;
+    }
 
+    public void setPortfolioDTO(StockPortfolioDTO portfolioDTO) {
+        this.portfolioDTO = portfolioDTO;
+    }
+
+    public void reset() {
+        user = null;
+        portfolioDTO = null;
+    }
 }

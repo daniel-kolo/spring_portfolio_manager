@@ -5,6 +5,12 @@ import java.util.HashMap;
 public class EditorView {
 
     private HashMap<String, StockPartInfoView> editable;
+    private HashMap<String, String> tickerToStockName;
+
+    public EditorView() {
+        editable = new HashMap<String, StockPartInfoView>();
+        tickerToStockName = new HashMap<>();
+    }
 
     public HashMap<String, StockPartInfoView> getEditable() {
         return editable;
@@ -14,11 +20,15 @@ public class EditorView {
         this.editable = editable;
     }
 
-    public EditorView() {
-        editable = new HashMap<String, StockPartInfoView>();
-    }
-
     public EditorView(HashMap<String, StockPartInfoView> editable) {
         this.editable = editable;
+    }
+
+    public HashMap<String, String> getTickerToStockName() {
+        return tickerToStockName;
+    }
+
+    public void setTickerToStockName(HashMap<String, String> tickerToStockName) {
+        this.tickerToStockName = tickerToStockName;
     }
 }

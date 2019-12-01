@@ -1,17 +1,22 @@
 package com.controller;
 
+import com.DTO.StockPortfolioDTO;
+import com.DTO.UserDTO;
 import com.domain.StockDownloader;
 import com.domain.StockPortfolio;
 import com.domain.User;
+import com.security.model.JwtRequest;
+import com.security.model.JwtResponse;
 import com.viewmodel.*;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import yahoofinance.histquotes.HistoricalQuote;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -27,6 +32,8 @@ import java.util.Random;
 public class MainController{
 
     @Autowired
+    private  UserController userController;
+    @Autowired
     private  JwtAuthenticationController jwtAuthenticationController;
     @Autowired
     private StockDownloader stockDownloader;
@@ -36,6 +43,10 @@ public class MainController{
     private MainSiteModel mainSiteModel = new MainSiteModel();
     private UserPortfolioView userPortfolioView;
     private HashMap<String, StockInfoView> viewMap = new HashMap<String, StockInfoView>();
+    // TODO: somewhere else
+    private String token;
+    // bearer token string just bunch of trash
+    final String BEARER = "0123456";
 
     public MainController() {
         cd.set(2019, 01, 01);
@@ -51,12 +62,15 @@ public class MainController{
         modelAndView.setViewName("index");
 
         if (mainSiteModel.getUser() != null) {
-
+            viewMap = new HashMap<>();
+            if (mainSiteModel.getPortfolioDTO().getStocks() != null) {
+                List<com.domain.Stock> stocks = mainSiteModel.getPortfolioDTO().getStocks();
+                for (com.domain.Stock s : stocks) {
+                    yahooAsk(viewMap, s.getTicker());
+                }
+            }
         } else {
             viewMap = getStocks(5);
-            for (String key : viewMap.keySet()){
-                System.out.println(viewMap.get(key));
-            }
         }
         mainSiteModel.setStocksInfo(viewMap);
         modelAndView.addObject("model", mainSiteModel);
@@ -65,11 +79,7 @@ public class MainController{
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public  ModelAndView registerUser(ModelAndView modelAndView, UserView userView){
-        System.out.println("The input was not ok checking and redirecting");
         modelAndView.setViewName("register");
-        if (userView.getUserName() != null) {
-            userView.setUserName(userView.getUserName());
-        }
         userView.setPassword("");
         modelAndView.addObject("model", userView);
         return  modelAndView;
@@ -77,23 +87,29 @@ public class MainController{
 
     @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
     public String registerUserCheck(UserView userView){
-        System.out.println("Id " + userView.getUserName() + " pw "  + userView.getPassword());
-        if (userView.getUserName() != null) {
+        if (userView.getUserName() != null && userView.getPassword() != null) {
             userView.setUserName(userView.getUserName());
-            // TODO: to other controller
-            return  "redirect:/welcome";
+            UserDTO dto = new UserDTO();
+            dto.setUsername(userView.getUserName());
+            dto.setPassword(userView.getPassword());
+            try {
+                ResponseEntity<?> response = jwtAuthenticationController.saveUser(dto);
+                JwtRequest jwtRequest = new JwtRequest(dto.getUsername(), dto.getPassword());
+                response = jwtAuthenticationController.createAuthenticationToken(jwtRequest);
+                return getAuthenticatedUser(response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return  "redirect:/register";
+            }
         }
-        // The form was not valid to register in db
-        userView.setUserName("");
-        userView.setPassword("");
-
         return  "redirect:/register";
     }
 
     @RequestMapping(value = "/quit", method = RequestMethod.GET)
     public String logoutView()
     {
-        mainSiteModel.setUser(null);
+        token = "";
+        mainSiteModel.reset();
         return "redirect:/welcome";
     }
 
@@ -108,15 +124,71 @@ public class MainController{
             mainSiteModel.setStocksInfo(userPortfolioView.getUserPortfolio());
         }
         editorModel.setEditable(userPortfolioView.getEditorview());
+        HashMap<String, String> tickerToName = new HashMap<>();
+        for (Object id : stockDownloader.getStockMap().keySet()){
+            String stockId = id.toString();
+            yahoofinance.Stock yahooStock = (yahoofinance.Stock)stockDownloader.getStockMap().get(stockId);
+            tickerToName.put(stockId, yahooStock.getName());
+        }
+        editorModel.setTickerToStockName(tickerToName);
         modelAndView.addObject("model", editorModel);
         return modelAndView;
     }
 
     @RequestMapping(value = "/saveChanges", method = RequestMethod.POST)
-    public String stockChangeSave(ModelAndView modelAndView, EditorView editorView, HttpServletRequest request) {
-
+    public String stockChangeSave(HttpServletRequest request) {
+        // TODO: get curent protfolio numbers
+        // TODO: update the portfolio controller
+        // TODO: add/API call here with token
         System.out.println(request.toString());
 
+        return  "redirect:/welcome";
+    }
+
+    @RequestMapping(value = "/addStock", method = RequestMethod.POST)
+    public String addStock(HttpServletRequest request) {
+        // TODO: get curent protfolio numbers
+        // TODO: update the portfolio controller
+        // TODO: add/API call here with token with 1
+        return "redirect:/welcome";
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public ModelAndView loginUser(ModelAndView modelAndView, UserView userView){
+        modelAndView.setViewName("register");
+        userView.setPassword("");
+        modelAndView.addObject("model", userView);
+        return  modelAndView;
+    }
+
+    @RequestMapping(value = "/loginUser", method = RequestMethod.POST)
+    public String loginUserCheck(UserView userView){
+        if (userView.getUserName() != null && userView.getPassword() != null) {
+            userView.setUserName(userView.getUserName());
+            UserDTO dto = new UserDTO();
+            dto.setUsername(userView.getUserName());
+            dto.setPassword(userView.getPassword());
+            try {
+                JwtRequest jwtRequest = new JwtRequest(dto.getUsername(), dto.getPassword());
+                ResponseEntity<?> response = jwtAuthenticationController.createAuthenticationToken(jwtRequest);
+                String redirection = getAuthenticatedUser(response);
+                return redirection;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return  "redirect:/login";
+            }
+        }
+        return  "redirect:/login";
+    }
+
+    private String getAuthenticatedUser(ResponseEntity<?> response) {
+        UserDTO dto;
+        JwtResponse resp = (JwtResponse)response.getBody();
+        token = BEARER + resp.getToken();
+        dto = userController.getUserByToken(token);
+        StockPortfolioDTO stockDTO = userController.getPortfolioByToken(token);
+        mainSiteModel.setPortfolioDTO(stockDTO);
+        mainSiteModel.setUser(dto);
         return  "redirect:/welcome";
     }
 
@@ -158,21 +230,26 @@ public class MainController{
         {
             int idx = rand.nextInt(stockIds.size());
             String stockId = stockIds.get(idx);
-            yahoofinance.Stock yahooStock = (yahoofinance.Stock)stockDownloader.getStockMap().get(stockId);
-            try {
-                List<HistoricalQuote> hist = yahooStock.getHistory(cd, Calendar.getInstance());
-                StockPartInfoView[] pw = new StockPartInfoView[hist.size()];
-                int j = 0;
-                for (HistoricalQuote h : hist) {
-                    Double price = Double.parseDouble(h.getClose().toString());
-                    pw[j] = new StockPartInfoView(h.getDate().getTime(), price, 0);
-                    j++;
-                }
-                map.put(yahooStock.getName(), new StockInfoView(stockId, pw));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            yahooAsk(map, stockId);
         }
         return map;
     }
+
+    private void yahooAsk(HashMap<String, StockInfoView> map, String stockId) {
+        try {
+            yahoofinance.Stock yahooStock = (yahoofinance.Stock)stockDownloader.getStockMap().get(stockId);
+            List<HistoricalQuote> hist = yahooStock.getHistory(cd, Calendar.getInstance());
+            StockPartInfoView[] pw = new StockPartInfoView[hist.size()];
+            int j = 0;
+            for (HistoricalQuote h : hist) {
+                Double price = Double.parseDouble(h.getClose().toString());
+                pw[j] = new StockPartInfoView(h.getDate().getTime(), price, 0);
+                j++;
+            }
+            map.put(yahooStock.getName(), new StockInfoView(stockId, pw));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

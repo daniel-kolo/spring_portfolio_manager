@@ -43,7 +43,7 @@
                         valueFormatString: "MMM YY"
                     },
                     axisY: {
-                        title: "Number of Sales",
+                        title: "Price",
                         titleFontColor: "#4F81BC",
                         suffix: "$"
                     },
@@ -101,19 +101,26 @@
     </ul>
     <ul style="background: #4F81BC">
         <#if model.user??>
-            <li><a href="/stockEdit">Edit stocks</a></li>
+            <li><a href="/stockEdit">Manage stocks</a></li>
             <li><a href="/welcome">Reporting</a></li>
             <li><a href="/quit">Logout</a></li>
         <#else>
             <li><a href="/register">Register</a></li>
+            <li><a href="/login">Login</a></li>
         </#if>
     </ul>
+    <#if model.stocksInfo??>
+        <#list 0..<model.stocksInfo?size as id>
+            <#assign containerid = containerName + id>
+            <div id="${containerid}" style="height: 370px; max-width: 920px; margin: 0px auto; background: black">${id}</div>
+            <tr>
+        </#list>
+    <#else>
+                <ul style="background: red">
+                    <li>No data present</li>
+                </ul>
+    </#if>
 
-    <#list 0..<model.stocksInfo?size as id>
-        <#assign containerid = containerName + id>
-        <div id="${containerid}" style="height: 370px; max-width: 920px; margin: 0px auto; background: black">${id}</div>
-        <tr>
-    </#list>
     <script src="/js/canvasjs.min.js"></script>
 </body>
 </html>

@@ -78,7 +78,7 @@ public class PortfolioApplication implements CommandLineRunner {
 		userRepo.save(user);
 		portfolioRepo.save(portfolio);
 
-		System.out.println(userRepo.findAll());
+/*		System.out.println(userRepo.findAll());*/
 
 
 
