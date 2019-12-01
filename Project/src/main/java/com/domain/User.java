@@ -40,7 +40,7 @@ public class User {
             mappedBy = "user",
             cascade = CascadeType.ALL
     )
-    private List<Transaction> transactionList ;
+    private TransactionContainer transactionContainer ;
 
      public User() {} ;
 
@@ -100,16 +100,17 @@ public class User {
         this.email = email;
     }
 
-    public void addTransaction(Date date, String  ticker,Double price,Boolean bought){
-        if (transactionList == null){
-            transactionList = new ArrayList<>(0);
+    public void addTransaction(Date date, String  ticker, Double price,Boolean bought){
+        if (transactionContainer == null){
+            transactionContainer = new TransactionContainer();
+            transactionContainer.setUser(this);
         }
 
-        transactionList.add(new Transaction(date, ticker, price, this, bought));
+        transactionContainer.addTransaction(date, ticker, price,  bought);
     }
 
-    public List<Transaction> getTransactionList(){
-        return transactionList;
+    public TransactionContainer getTransactionContainer(){
+        return transactionContainer;
     }
 
     @Override
@@ -119,7 +120,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", portfolio=" + portfolio +
-                ", transactionList=" + transactionList +
+                ", transactionContainer=" + transactionContainer +
                 '}';
     }
 }

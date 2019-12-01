@@ -27,17 +27,20 @@ public class Transaction {
 
     @JsonIgnore
     @ManyToOne(fetch= FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "container_id")
+    private TransactionContainer container;
 
     public Transaction(){}
 
-    public Transaction(Date date, String ticker, double price, User user, Boolean bought) {
+    public Transaction(Date date, String ticker, double price, Boolean bought) {
         this.date = date;
         this.ticker = ticker;
         this.price = price;
-        this.user = user;
         this.bought = bought;
+    }
+
+    public void setContainer(TransactionContainer container){
+        this.container = container;
     }
 
     @Override
