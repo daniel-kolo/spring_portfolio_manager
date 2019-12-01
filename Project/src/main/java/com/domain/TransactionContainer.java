@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 public class TransactionContainer {
 
-    @javax.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private int Id;
 
@@ -22,8 +22,7 @@ public class TransactionContainer {
     @Column
     @OneToMany(
             mappedBy = "container",
-            cascade = CascadeType.PERSIST,
-            fetch = FetchType.EAGER
+            cascade = CascadeType.PERSIST
     )
     private List<Transaction> transactions;
 
@@ -56,4 +55,11 @@ public class TransactionContainer {
 
     }
 
+    @Override
+    public String toString() {
+        return "TransactionContainer{" +
+
+                ", transactions=" + transactions +
+                '}';
+    }
 }

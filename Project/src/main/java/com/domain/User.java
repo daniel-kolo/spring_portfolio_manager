@@ -31,14 +31,15 @@ public class User {
     @OneToOne(
     mappedBy = "user",
     cascade = CascadeType.PERSIST,
-    orphanRemoval = true,
-    fetch = FetchType.EAGER
+    orphanRemoval = true
     )
     private  StockPortfolio portfolio;
 
-    @OneToMany(
+    @OneToOne(
             mappedBy = "user",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.PERSIST,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
     )
     private TransactionContainer transactionContainer ;
 

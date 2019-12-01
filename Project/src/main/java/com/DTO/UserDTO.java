@@ -42,7 +42,7 @@ public class UserDTO {
         return portfolio;
     }
 
-    public TransactionContainer gettransactionContainer() {
+    public TransactionContainer getTransactionContainer() {
         return transactionContainer;
     }
 
