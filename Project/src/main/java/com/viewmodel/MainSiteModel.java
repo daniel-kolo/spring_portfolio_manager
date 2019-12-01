@@ -16,6 +16,7 @@ public class MainSiteModel {
 
     public MainSiteModel(Stock[] currentShown, HashMap<String, StockInfoView> stockInfo) {
         this.user = null;
+        this.portfolioDTO = null;
         this.randomStocks = currentShown;
         this.stocksInfo = stockInfo;
     }

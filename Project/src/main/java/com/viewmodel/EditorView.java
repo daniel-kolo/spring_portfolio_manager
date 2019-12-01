@@ -4,23 +4,23 @@ import java.util.HashMap;
 
 public class EditorView {
 
-    private HashMap<String, StockPartInfoView> editable;
+    private HashMap<String, EditableStockView> editable;
     private HashMap<String, String> tickerToStockName;
 
     public EditorView() {
-        editable = new HashMap<String, StockPartInfoView>();
+        editable = new HashMap<String, EditableStockView>();
         tickerToStockName = new HashMap<>();
     }
 
-    public HashMap<String, StockPartInfoView> getEditable() {
-        return editable;
-    }
-
-    public void setEditable(HashMap<String, StockPartInfoView> editable) {
+    public EditorView(HashMap<String, EditableStockView> editable) {
         this.editable = editable;
     }
 
-    public EditorView(HashMap<String, StockPartInfoView> editable) {
+    public HashMap<String, EditableStockView> getEditable() {
+        return editable;
+    }
+
+    public void setEditable(HashMap<String, EditableStockView> editable) {
         this.editable = editable;
     }
 

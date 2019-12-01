@@ -11,13 +11,21 @@ public class UserPortfolioView {
         return userPortfolio;
     }
 
-    public HashMap<String, StockPartInfoView> getEditorview()
+    public HashMap<String, EditableStockView> getEditorview()
     {
-        HashMap<String, StockPartInfoView> editorView = new HashMap<String, StockPartInfoView>();
+        HashMap<String, EditableStockView> editorView = new HashMap<>();
         for (int i = 0; i < portfolioData.length; i++)
         {
             int lastIdx = portfolioData[i].getElementsToShow().length - 1;
-            editorView.put(portfolioData[i].getStockName(), portfolioData[i].getElementsToShow()[lastIdx]);
+            StockPartInfoView last = portfolioData[i].getElementsToShow()[lastIdx];
+            EditableStockView esv = new EditableStockView(
+                    portfolioData[i].getStockName(),
+                    portfolioData[i].getTickerId(),
+                    last.getAmount(),
+                    last.getPrice()
+            );
+            editorView.put(portfolioData[i].getStockName(), esv);
+            System.out.println("Suer portfolio class, sotckname: " + portfolioData[i].getStockName());
         }
         return editorView;
     }

@@ -24,6 +24,8 @@ public class StockDownloader {
         System.out.println("Stocks downloaded");
     }
 
+    public String getStockNameByTicker(String tickerName) { return  tickerMap.get(tickerName); }
+
     public List<String> getStockNameList(){
         return new ArrayList<>(tickerMap.values());
     }

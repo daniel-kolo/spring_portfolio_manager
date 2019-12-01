@@ -3,29 +3,20 @@ package com.controller;
 import com.DTO.StockPortfolioDTO;
 import com.DTO.UserDTO;
 import com.domain.StockDownloader;
-import com.domain.StockPortfolio;
-import com.domain.User;
 import com.security.model.JwtRequest;
 import com.security.model.JwtResponse;
 import com.viewmodel.*;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import yahoofinance.histquotes.HistoricalQuote;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Controller
 @RequestMapping("/")
@@ -115,23 +106,31 @@ public class MainController{
 
     @RequestMapping(value = "/stockEdit", method = RequestMethod.GET)
     public ModelAndView stockEdit(ModelAndView modelAndView) {
-        modelAndView.setViewName("stockeditor");
-        // TODO: get uid and return in the format, the last element from the portfolio
-        mainSiteModel.getStocksInfo();
-        EditorView editorModel = new EditorView();
-        if (userPortfolioView == null) {
-            userPortfolioView = new UserPortfolioView(userDummyView());
-            mainSiteModel.setStocksInfo(userPortfolioView.getUserPortfolio());
+
+        if (mainSiteModel.getUser() != null) {
+            modelAndView.setViewName("stockeditor");
+            // TODO: after add
+            // TODO: get uid and return in the format, the last element from the portfolio
+            EditorView editorModel = new EditorView();
+            if (mainSiteModel.getPortfolioDTO().getStocks() != null) {
+                StockInfoView[] transformed = transformToView(mainSiteModel.getPortfolioDTO());
+                userPortfolioView = new UserPortfolioView(transformed);
+                mainSiteModel.setStocksInfo(userPortfolioView.getUserPortfolio());
+                editorModel.setEditable(userPortfolioView.getEditorview());
+            }
+
+            HashMap<String, String> tickerToName = new HashMap<>();
+            for (Object id : stockDownloader.getStockMap().keySet()){
+                String stockId = id.toString();
+                yahoofinance.Stock yahooStock = (yahoofinance.Stock)stockDownloader.getStockMap().get(stockId);
+                tickerToName.put(stockId, yahooStock.getName());
+            }
+            editorModel.setTickerToStockName(tickerToName);
+            modelAndView.addObject("model", editorModel);
+        } else {
+            modelAndView.setViewName("index");
+            modelAndView.addObject("model", mainSiteModel);
         }
-        editorModel.setEditable(userPortfolioView.getEditorview());
-        HashMap<String, String> tickerToName = new HashMap<>();
-        for (Object id : stockDownloader.getStockMap().keySet()){
-            String stockId = id.toString();
-            yahoofinance.Stock yahooStock = (yahoofinance.Stock)stockDownloader.getStockMap().get(stockId);
-            tickerToName.put(stockId, yahooStock.getName());
-        }
-        editorModel.setTickerToStockName(tickerToName);
-        modelAndView.addObject("model", editorModel);
         return modelAndView;
     }
 
@@ -140,8 +139,27 @@ public class MainController{
         // TODO: get curent protfolio numbers
         // TODO: update the portfolio controller
         // TODO: add/API call here with token
-        System.out.println(request.toString());
+        if (mainSiteModel.getPortfolioDTO().getStocks() != null) {
+            List<String> paramNames = Collections.list(request.getParameterNames());
+            for (String param : paramNames) {
+                System.out.println(param);
+                if (param.startsWith("stockCount") && param.contains("_")) {
+                    String value = request.getParameter(param);
+                    System.out.println(value);
+                    String tickerId = param.split("_")[1];
+                    Integer currentAmount = Integer.parseInt(request.getParameter(param));
+                    Integer pastValue = mainSiteModel.getPortfolioDTO().getStockMap().get(tickerId);
+                    System.out.println("Past " + pastValue + " Current " + currentAmount);
+                    if (pastValue != currentAmount) {
+                        Integer toAdd = currentAmount - pastValue;
+                        System.out.println("Input value was " + toAdd);
+                        StockPortfolioDTO newDTO = userController.addStockToPortfolio(token, tickerId, toAdd);
+                        mainSiteModel.setPortfolioDTO(newDTO);
+                    }
 
+                }
+            }
+        }
         return  "redirect:/welcome";
     }
 
@@ -149,13 +167,29 @@ public class MainController{
     public String addStock(HttpServletRequest request) {
         // TODO: get curent protfolio numbers
         // TODO: update the portfolio controller
-        // TODO: add/API call here with token with 1
+        // TODO: add/API call here with token with 13
+        if (mainSiteModel.getUser() != null) {
+            List<String> paramNames = Collections.list(request.getParameterNames());
+            for (String param : paramNames) {
+                if (param.startsWith("stockId;")) {
+                    String value = request.getParameter(param);
+                    System.out.println(value);
+                    if (value.equals("on")) {
+                        String tickerId = param.split(";")[1];
+                        System.out.println("Input value was " + tickerId);
+                        StockPortfolioDTO newDTO = userController.addStockToPortfolio(token, tickerId, 1);
+                        mainSiteModel.setPortfolioDTO(newDTO);
+                    }
+                }
+            }
+            return "redirect:/stockEdit";
+        }
         return "redirect:/welcome";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView loginUser(ModelAndView modelAndView, UserView userView){
-        modelAndView.setViewName("register");
+        modelAndView.setViewName("login");
         userView.setPassword("");
         modelAndView.addObject("model", userView);
         return  modelAndView;
@@ -209,8 +243,8 @@ public class MainController{
                     new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/11/2019"), 90, 2),
                     new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/12/2019"), 25, 3),
             };
-            StockInfoView st = new StockInfoView("O love bme",elements);
-            StockInfoView st2 = new StockInfoView("Boole",elements2);
+            StockInfoView st = new StockInfoView("O love bme",elements, "asdasdas", 0);
+            StockInfoView st2 = new StockInfoView("Boole",elements2, "lmalm", 0);
             data[0] = st;
             data[1] = st2;
         } catch (ParseException e) {
@@ -246,10 +280,36 @@ public class MainController{
                 pw[j] = new StockPartInfoView(h.getDate().getTime(), price, 0);
                 j++;
             }
-            map.put(yahooStock.getName(), new StockInfoView(stockId, pw));
+            Integer amount = 0;
+            if (mainSiteModel.getPortfolioDTO() != null && mainSiteModel.getPortfolioDTO().getStockMap() != null) {
+                amount = mainSiteModel.getPortfolioDTO().getStockMap().get(stockId);
+            }
+            map.put(yahooStock.getName(), new StockInfoView(stockId, pw, "", amount));
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private StockInfoView[] transformToView(StockPortfolioDTO portfolioDTO) {
+        System.out.println(portfolioDTO);
+        StockInfoView[] views = new StockInfoView[portfolioDTO.getStocks().size()];
+        int i = 0;
+        for (com.domain.Stock st : portfolioDTO.getStocks()){
+            Integer amount = portfolioDTO.getStockMap().get(st.getTicker());
+            StockPartInfoView p = new StockPartInfoView();
+            p.setAmount(amount);
+            p.setPrice(st.getPrice());
+            StockPartInfoView[] parts = new StockPartInfoView[] {p};
+            String name = st.getName();
+            if (name == null) {
+                name = stockDownloader.getStockNameByTicker(st.getTicker());
+            }
+            System.out.println(stockDownloader.getStockNameByTicker(st.getTicker()));
+
+            views[i] = new StockInfoView(name, parts, st.getTicker(), 0);
+            i++;
+        }
+        return views;
     }
 
 }

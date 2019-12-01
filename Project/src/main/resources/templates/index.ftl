@@ -110,11 +110,31 @@
         </#if>
     </ul>
     <#if model.stocksInfo??>
-        <#list 0..<model.stocksInfo?size as id>
+        <#assign id = 0>
+        <#list model.stocksInfo as key, value>
             <#assign containerid = containerName + id>
-            <div id="${containerid}" style="height: 370px; max-width: 920px; margin: 0px auto; background: black">${id}</div>
-            <tr>
+                <div id="${containerid}" style="height: 370px; max-width: 920px; margin: 0px auto; background: black">${id}</div>
+            <#if model.user??>
+                <div style="max-height: 370px; max-width: 920px; margin: 0px auto; background: #333; color: white">
+                    <table style="object-fit: fill;">
+                        <tr>
+                            <td>Current Price: </td>
+                            <td>${value.lastPrice}</td>
+                        </tr>
+                        <tr>
+                            <td>Amount: </td>
+                            <td>${value.amount}</td>
+                        </tr>
+                        <tr>
+                            <td>Current value: </td>
+                            <td>${value.amount * value.lastPrice}</td>
+                        </tr>
+                    </table>
+                </div>
+            </#if>
+            <#assign id = id + 1>
         </#list>
+
     <#else>
                 <ul style="background: red">
                     <li>No data present</li>

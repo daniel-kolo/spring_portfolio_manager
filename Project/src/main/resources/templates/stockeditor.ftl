@@ -116,24 +116,25 @@
                 <td>Last Price</td>
                 <td>Amount</td>
             </thead>
-
-            <#list model.editable as key, stockPartInfo>
-                <tr>
-                    <td>${key}</td>
-                    <td>${stockPartInfo.price}</td>
-                    <td>
-                        <div class="input-group">
-                            <#assign stockId = idname + idx>
-                            <#assign hiddenValue = '${key};${stockId}'>
-                            <input type="button" value="-" class="button-minus" data-field="${stockId}">
-                            <input type="number" step="1" max="" value="${stockPartInfo.amount}" name="${stockId}" class="quantity-field">
-                            <input type="button" value="+" class="button-plus" data-field="${stockId}">
-                            <input type="hidden" value="${hiddenValue}">
-                        </div>
-                    </td>
-                </tr>
-                <#assign  idx = idx + 1>
-            </#list>
+            <#if model?? && model.editable??>
+                <#list model.editable as key, editView>
+                    <tr>
+                            <td>${key}</td>
+                            <td>${editView.price}</td>
+                            <td>
+                                <div class="input-group">
+                                    <#assign stockId = idname + idx>
+                                    <#assign hiddenValue = '${stockId}_${editView.tickerId}'>
+                                    <input type="button" value="-" class="button-minus" data-field="${hiddenValue}">
+                                    <input type="number" step="1" max="" value="${editView.amount}" name="${hiddenValue}" class="quantity-field">
+                                    <input type="button" value="+" class="button-plus" data-field="${hiddenValue}">
+                                    <input type="hidden" value="${hiddenValue}">
+                                </div>
+                            </td>
+                    </tr>
+                    <#assign  idx = idx + 1>
+                </#list>
+            </#if>
         </table>
         <button type="submit">Change</button>
     </form>
@@ -145,11 +146,13 @@
                 <#if key?? && value??>
                     <tr>
                         <td>${value}</td>
-                        <td><input type="checkbox" name="${key}" required="false"></td>
+                        <#assign stockId =  'stockId;' + key>
+                        <td><input type="checkbox" name="${stockId}"></td>
                     </tr>
                 </#if>
             </#list>
         </table>
+        <input type="submit">
     </form>
 
 
