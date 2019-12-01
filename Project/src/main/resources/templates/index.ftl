@@ -113,7 +113,7 @@
         <#assign id = 0>
         <#list model.stocksInfo as key, value>
             <#assign containerid = containerName + id>
-                <div id="${containerid}" style="height: 370px; max-width: 920px; margin: 0px auto; background: black">${id}</div>
+                <div id="${containerid}" style="height: 370px; max-width: 920px; margin: 0px auto; background: black"></div>
             <#if model.user??>
                 <div style="max-height: 370px; max-width: 920px; margin: 0px auto; background: #333; color: white">
                     <table style="object-fit: fill;">
@@ -126,7 +126,7 @@
                             <td>${value.amount}</td>
                         </tr>
                         <tr>
-                            <td>Current value: </td>
+                            <td>Total value: </td>
                             <td>${value.amount * value.lastPrice}</td>
                         </tr>
                     </table>

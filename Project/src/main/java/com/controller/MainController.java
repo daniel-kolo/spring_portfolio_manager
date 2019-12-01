@@ -165,18 +165,13 @@ public class MainController{
 
     @RequestMapping(value = "/addStock", method = RequestMethod.POST)
     public String addStock(HttpServletRequest request) {
-        // TODO: get curent protfolio numbers
-        // TODO: update the portfolio controller
-        // TODO: add/API call here with token with 13
         if (mainSiteModel.getUser() != null) {
             List<String> paramNames = Collections.list(request.getParameterNames());
             for (String param : paramNames) {
                 if (param.startsWith("stockId;")) {
                     String value = request.getParameter(param);
-                    System.out.println(value);
                     if (value.equals("on")) {
                         String tickerId = param.split(";")[1];
-                        System.out.println("Input value was " + tickerId);
                         StockPortfolioDTO newDTO = userController.addStockToPortfolio(token, tickerId, 1);
                         mainSiteModel.setPortfolioDTO(newDTO);
                     }
@@ -224,34 +219,6 @@ public class MainController{
         mainSiteModel.setPortfolioDTO(stockDTO);
         mainSiteModel.setUser(dto);
         return  "redirect:/welcome";
-    }
-
-    private StockInfoView[] userDummyView()
-    {
-        StockInfoView[] data = new StockInfoView[2];
-        try
-        {
-            StockPartInfoView[] elements = {
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2019"), 50, 4),
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/10/2019"), 60, 5),
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/11/2019"), 900, 2),
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/12/2019"), 50, 3),
-            };
-            StockPartInfoView[] elements2 = {
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2019"), 80, 4),
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/10/2019"), 150, 5),
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/11/2019"), 90, 2),
-                    new StockPartInfoView(new SimpleDateFormat("dd/MM/yyyy").parse("01/12/2019"), 25, 3),
-            };
-            StockInfoView st = new StockInfoView("O love bme",elements, "asdasdas", 0);
-            StockInfoView st2 = new StockInfoView("Boole",elements2, "lmalm", 0);
-            data[0] = st;
-            data[1] = st2;
-        } catch (ParseException e) {
-
-            e.printStackTrace();
-        }
-        return data;
     }
 
     private HashMap<String, StockInfoView> getStocks(int numberOfStocks) {

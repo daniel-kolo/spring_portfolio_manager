@@ -65,6 +65,65 @@
             -moz-appearance: textfield;
             -webkit-appearance: none;
         }
+
+        input[type=text], select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type=password], select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type=submit] {
+            width: 100%;
+            background-color: #4F81BC;
+            color: white;
+            padding-left: 25%;
+            padding-right: 25%;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #4F81BC;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover {
+            background-color: #111;
+        }
     </style>
     <#assign idx = 0>
     <#assign idname = 'stockCount'>
@@ -107,18 +166,24 @@
     </script>
 </head>
 <body>
-
-    <h2>Manage stock</h2>
-    <form action="/saveChanges" method="post">
-        <table>
-            <thead>
+<div style="background: #333; padding-left: 20%; padding-right: 20%; align-content: center">
+    <ul style="background: #4F81BC; max-width: 1200px">
+            <li><a href="/welcome">Back</a></li>
+    </ul>
+    <div style="max-width: 1200px; background: white; align-content: center">
+        <ul style="background: black; max-width: 1200px">
+            <li><h2 style="color: white;">Manage stock</h2></li>
+        </ul>
+        <form action="/saveChanges" method="post">
+            <table style="width: 100%; padding-left: 20%;">
+                <thead>
                 <td>Stock name</td>
                 <td>Last Price</td>
                 <td>Amount</td>
-            </thead>
-            <#if model?? && model.editable??>
-                <#list model.editable as key, editView>
-                    <tr>
+                </thead>
+                <#if model?? && model.editable??>
+                    <#list model.editable as key, editView>
+                        <tr>
                             <td>${key}</td>
                             <td>${editView.price}</td>
                             <td>
@@ -131,33 +196,32 @@
                                     <input type="hidden" value="${hiddenValue}">
                                 </div>
                             </td>
-                    </tr>
-                    <#assign  idx = idx + 1>
-                </#list>
-            </#if>
-        </table>
-        <button type="submit">Change</button>
-    </form>
-
-    <h2>Add stock</h2>
-    <form action="/addStock" method="post">
-        <table>
-            <#list model.tickerToStockName as key, value>
-                <#if key?? && value??>
-                    <tr>
-                        <td>${value}</td>
-                        <#assign stockId =  'stockId;' + key>
-                        <td><input type="checkbox" name="${stockId}"></td>
-                    </tr>
+                        </tr>
+                        <#assign  idx = idx + 1>
+                    </#list>
                 </#if>
-            </#list>
-        </table>
-        <input type="submit">
-    </form>
-
-
-
-
+            </table>
+            <input type="submit">
+        </form>
+        <ul style="background: black; max-width: 1200px">
+            <li><h2 style="color: white;">Add stock</h2></li>
+        </ul>
+        <form action="/addStock" method="post">
+            <table style="width: 100%; padding-left: 25%; padding-right: 25%">
+                <#list model.tickerToStockName as key, value>
+                    <#if key?? && value??>
+                        <tr>
+                            <td>${value}</td>
+                            <#assign stockId =  'stockId;' + key>
+                            <td><input type="checkbox" name="${stockId}"></td>
+                        </tr>
+                    </#if>
+                </#list>
+            </table>
+            <input type="submit">
+        </form>
+    </div>
+</div>
     <script type="text/javascript"  src="webjars/jquery/3.2.1/jquery.min.js"></script>
 </body>
 </html>
