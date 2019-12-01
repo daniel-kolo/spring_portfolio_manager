@@ -34,7 +34,7 @@ public class UserController {
     public UserDTO getUserByToken(@RequestHeader (name="Authorization") String token){
         String jwtToken = token.substring(7);
         String username = tokenUtil.getUsernameFromToken(jwtToken );
-        System.out.println("GET " + userRepo.findByUsername(username)) ;
+        System.out.println(userRepo.findByUsername(username));
         return new UserDTO(userRepo.findByUsername(username));
     }
 
@@ -46,23 +46,19 @@ public class UserController {
     }
 
     @PostMapping("/user/portfolio/add")
-    public StockPortfolioDTO addStockToPortfolio(@RequestHeader (name="Authorization") String token){
+    public StockPortfolioDTO addStockToPortfolio(@RequestHeader (name="Authorization") String token,
+                                                 @RequestHeader (name="Ticker") String ticker,
+                                                 @RequestHeader (name="Number") Integer number ){
         String jwtToken = token.substring(7);
         String username = tokenUtil.getUsernameFromToken(jwtToken );
-        //StockPortfolio =  userRepo.findByUsername(username).getPortfolio().addStock("GOOG", 1);
         User user  = userRepo.findByUsername(username);
         StockPortfolio portfolio = user.getPortfolio();
-        portfolio.addStock("GOOG", 1, stockRepo);
-        portfolio.setTest("test");
+        portfolio.addStock(ticker, number);
         user.setPortfolio(portfolio);
-        System.out.println(user);
-
         userRepo.save(user);
         portfolioRepo.save(portfolio);
-        System.out.println(userRepo.findByUsername(username)) ;
         return new StockPortfolioDTO(portfolio);
     }
-
 
     @PutMapping("/user")
     public UserDTO saveOrUpdateUser(@RequestBody  User user){

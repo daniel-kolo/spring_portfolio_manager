@@ -28,7 +28,7 @@ public class Stock {
     private Date acquireDate;
 
     @JsonIgnore
-    @ManyToOne(fetch= FetchType.EAGER)
+    @ManyToOne(fetch= FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "portfolio_id")
     private StockPortfolio portfolio;
 

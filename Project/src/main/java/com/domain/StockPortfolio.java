@@ -27,25 +27,13 @@ public class StockPortfolio {
     @Column
     @OneToMany(
             mappedBy = "portfolio",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch=FetchType.EAGER
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.EAGER
     )
-    private List<Stock> stocks= new ArrayList<>(0);
+    private List<Stock> stocks;
 
-    @ElementCollection
-    private Map<String, Integer> stockMap = new HashMap<>();
-
-    @Column
-    private String test;
-
-    public String getTest() {
-        return test;
-    }
-
-    public void setTest(String test) {
-        this.test = test;
-    }
+    @ElementCollection()
+    private Map<String, Integer> stockMap;
 
     public StockPortfolio() {}
 
@@ -73,7 +61,16 @@ public class StockPortfolio {
         this.user = user;
     }
 
-    public void addStock(String ticker, Integer num, StockRepository stockRepo){
+    public void addStock(String ticker, Integer num){
+
+        if (stocks == null){
+            stocks = new ArrayList<>(0);
+        }
+
+        if( stockMap == null)
+        {
+            stockMap =  new HashMap<>();
+        }
 
         Date date = new Date();
         for (int i = 0; i<num; i++){
@@ -85,14 +82,18 @@ public class StockPortfolio {
 
             double price = downloader.getStockPriceByTicker(ticker).doubleValue();
             Stock newStock = new Stock(ticker, price, date);
+            newStock.setPortfolio(this);
             stocks.add(newStock);
 
-            user.addTransaction(new Transaction(date, ticker, price, user, true));
-            stockRepo.save(newStock);
+            user.addTransaction(date, ticker, price, true);
+
         }
 
         if (stockMap.containsKey(ticker)){
             stockMap.put(ticker, stockMap.get(ticker)+num);
+        }
+        else{
+            stockMap.put(ticker, num);
         }
 
     }

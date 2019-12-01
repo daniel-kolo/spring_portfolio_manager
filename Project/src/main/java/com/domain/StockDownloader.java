@@ -35,7 +35,6 @@ public class StockDownloader {
     }
 
     public BigDecimal getStockPriceByTicker(String ticker){
-        System.out.println("DOWNLOADER:" + stockMap.get(ticker).getQuote().getPrice());
         return stockMap.get(ticker).getQuote().getPrice();
     }
 

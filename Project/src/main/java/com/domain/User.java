@@ -1,8 +1,11 @@
 package com.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.repo.StockRepository;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -27,19 +30,17 @@ public class User {
 
     @OneToOne(
     mappedBy = "user",
-    cascade = CascadeType.ALL,
+    cascade = CascadeType.PERSIST,
     orphanRemoval = true,
-    fetch = FetchType.LAZY
+    fetch = FetchType.EAGER
     )
     private  StockPortfolio portfolio;
 
     @OneToMany(
             mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch=FetchType.EAGER
+            cascade = CascadeType.ALL
     )
-    private List<Transaction> transactionList = new ArrayList<>(0);
+    private List<Transaction> transactionList ;
 
      public User() {} ;
 
@@ -99,8 +100,12 @@ public class User {
         this.email = email;
     }
 
-    public void addTransaction(Transaction transaction){
-        transactionList.add(transaction);
+    public void addTransaction(Date date, String  ticker,Double price,Boolean bought){
+        if (transactionList == null){
+            transactionList = new ArrayList<>(0);
+        }
+
+        transactionList.add(new Transaction(date, ticker, price, this, bought));
     }
 
     public List<Transaction> getTransactionList(){

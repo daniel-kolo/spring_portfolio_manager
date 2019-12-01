@@ -12,9 +12,17 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
+
+    @Column
     private Date date;
+
+    @Column
     private String ticker;
+
+    @Column
     private double price;
+
+    @Column
     private Boolean bought;
 
     @JsonIgnore
@@ -26,7 +34,7 @@ public class Transaction {
 
     public Transaction(Date date, String ticker, double price, User user, Boolean bought) {
         this.date = date;
-        ticker = ticker;
+        this.ticker = ticker;
         this.price = price;
         this.user = user;
         this.bought = bought;

@@ -63,55 +63,23 @@ public class PortfolioApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		//Map<String, yahoofinance.Stock> map = downloader.getStockPriceByTicker("GOOG=GOOG");
 
-		/*
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		JsonParser jp = new JsonParser();
-		JsonElement je = jp.parse(map.toString());
-		String prettyJsonString = gson.toJson(je);
-		*/
-		//System.out.println(prettyJsonString);
-
-		//System.out.println(map.values().toArray()[0].getQuote());
-
-		//System.out.println(downloader.getStockNameList());
-
-
-		//System.out.println(downloader.getStockPriceByTicker("IPG"));
-
-		// Adding basic test objects of User, StockPortfolio, Stock types
 		StockPortfolio portfolio = new StockPortfolio();
-
-
-		//System.out.println(downloader.getStockPriceByTicker("GOOG"));
-
-		//System.out.println(downloader.getStockMap().get("IPG"));
-		//System.out.println(downloader.getStockMap().get("CA"));
-		//System.out.println(downloader.getStockMap().get("GOOG"));
-
-
-
-		//System.out.println(downloader.getTestTicker("CA"));
-		//portfolio.addStock("CA", 1);
-
-		// TODO
-		//System.out.println(downloader);
-		portfolio.setUser(new User());
-		//
-		// portfolio.addStock("GOOG", 1);
-
-		StockPriceService stockPriceService = new StockPriceService();
-		System.out.println(BeanUtil.getBean(StockDownloader.class).getStockPriceByTicker("GOOG"));
-
 		User user = new User();
+
 		user.setName("test_user");
 		user.setUsername("test");
 		user.setPassword("test");
 		user.setPortfolio(portfolio);
+		portfolio.setUser(user);
+		portfolio.addStock("GOOG", 1 );
+
 
 		userRepo.save(user);
 		portfolioRepo.save(portfolio);
+
+		System.out.println(userRepo.findAll());
+
 
 
 	}
