@@ -61,19 +61,19 @@
             var dict = {};
             /*Convert the model to js objects*/
             <#list model.stocksInfo as key, stockInfo>
-            var data = [];
-            var idx = 0;
-                <#list stockInfo.elementsToShow as element>
-                    var dateSplit = '${element.dateDownload?string('dd/MM/yyyy')}'.split('/');
-                    console.log(dateSplit);
-                    data.push({
-                        x     : idx,
-                        y     : ${element.price},
-                        label : '${element.dateDownload?string('dd/MM/yyyy')}'
-                    })
-                    idx++;
-                </#list>
-            dict['${key}'] = data;
+                var data = [];
+                var idx = 0;
+                    <#list stockInfo.elementsToShow as element>
+                        var dateSplit = '${element.dateDownload?string('dd/MM/yyyy')}'.split('/');
+                        console.log(dateSplit);
+                        data.push({
+                            x     : idx,
+                            y     : ${element.price},
+                            label : '${element.dateDownload?string('dd/MM/yyyy')}'
+                        })
+                        idx++;
+                    </#list>
+                dict['${key}'] = data;
             </#list>
             var stockKeys = [<#list model.stocksInfo as key, val>'${key}',</#list>];
             for (var i = 0; i < stockKeys.length; i++) {
